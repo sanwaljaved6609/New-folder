@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <link rel="stylesheet" href="index.css"> -->
+    <title>Page</title>
+</head>
+<body>
+
+    <div class="signup">
+
+        <h1 class="header">Sign Up Form with Database</h1>
+
+
+        <div class="form">
+
+            <form onsubmit="signup(); return false ">
+
+
+                <!-- <label for="firstname">First Name</label> <br> -->
+                <input type="text" placeholder="Enter First Name" id="firstName"><br> <br>
+        
+                <!-- <label for="lastname">Last Name</label><br> -->
+                <input type="text" placeholder="Enter Last Name"  id="lastName"><br> <br>
+        
+                <!-- <label for="email">E-Mail</label><br> -->
+                <input type="email" placeholder="Enter your E-Mail" id="email"><br> <br>
+        
+                <!-- <label for="password">Password</label><br> -->
+                <input type="password" placeholder="Enter your Password" id="password"><br> <br>
+        
+                <!-- <label for="confirm">Confirm Password</label><br> -->
+                <input type="password" placeholder="Confirm Password" id="repeatPassword"><br><br>
+        
+                <input type="submit" value="Sign Up">
+        
+            </form>
+
+        </div>
+
+
+    </div>
+
+           
+    <br>
+    <p id="message"></p>
+
+    <br><br>
+
+    <button onclick="getAllUser()" >Get All Users</button>
+
+    <p id="allusers"></p>
+
+
+    <script>
+
+
+        function getAllUser() {
+
+            axios.get('http://localhost:3000/users')
+                .then(function (response) {
+                    console.log(response.data);
+
+                    response.data.map((eachUser) => {
+                        document.querySelector("#allusers").innerHTML +=
+                            `${eachUser.firstName} ${eachUser.lastName} - ${eachUser.email} <br>`
+                    })
+
+                })
+                .catch(function (error) {
+                    // console.log(error.response.data);
+                    console.log(error);
+                    // document.querySelector("#message").innerHTML = error.response.data.message;
+                    document.querySelector("#message").innerHTML = error;
+                });
+        }
+        getAllUser();
+
+
+
+        function signup() {
+
+            var firstName = document.getElementById('firstName').value;
+            var lastName = document.getElementById('lastName').value;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var repeatPassword = document.getElementById('repeatPassword').value;
+
+            if (password !== repeatPassword) {
+                document.querySelector("#message").innerHTML = 'Passwords do not match, please try again';
+                return;
+            }
+
+            axios.post('http://localhost:3000/sign', {
+
+                firstName,
+                lastName,
+                email,
+                password,
+                repeatPassword,
+            })
+                .then(function (response) {
+                    console.log(response.data);
+                    document.querySelector("#message").innerHTML = response.data.message;
+                })
+                .catch(function (error) {
+             
+                    console.log(error);
+                    document.querySelector("#message").innerHTML = error;
+                });
+        }
+
+
+
+    </script>
+    
+</body>
+</html>
